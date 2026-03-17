@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&family=Reem+Kufi:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&family=Reem+Kufi:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Font Awesome -->
@@ -58,10 +58,10 @@
             <div class="arabic-calligraphy"
                 style="margin-bottom: 30px; display: flex; flex-direction: column; align-items: center;">
                 <div class="mandala-frame"
-                    style="position: relative; width: 350px; height: 350px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                    style="position: relative; width: 350px; height: 350px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));">
                     <!-- The Background Mandala Image -->
                     <div
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; animation: spin-slow 60s linear infinite; background-image: url('images/bismillah_frame_trans.png'); background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); opacity: 0.85;">
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; animation: spin-slow 60s linear infinite; background-image: url('images/bismillah_frame_trans.png'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.85; will-change: transform; -webkit-transform: translateZ(0); transform: translateZ(0);">
                     </div>
 
                     <!-- The Centered Arabic Text -->
@@ -77,7 +77,7 @@
 
             <p class="invitation-body" style="margin-bottom: 40px;font-size: 0.95rem; font-style: italic">
                 With the blessings of Allah (Subhanahu Wa Ta'ala),<BR>Mrs. Mushtaque Ahmad, wife of Late Mr. Mushtaque
-                Ahmad, <BR>requests the honor of your presence at the wedding ceremony of their beloved youngest
+                Ahmad, <BR>requests the honor of your presence at the wedding ceremony of her beloved youngest
                 daughter
             </p>
 
@@ -94,38 +94,6 @@
         </div>
         </div>
     </header>
-
-    <!-- Countdown Section -->
-    <section id="countdown" class="section-padding dark-bg" style="padding-top: 60px;">
-        <div class="container text-center reveal">
-            <h2 class="section-title light-text">Save The Date</h2>
-            <div class="title-separator mb-4"></div>
-
-            <div class="hero-content fade-in-up" style="max-width: 100%; padding: 0;">
-                <p class="venue mb-4"
-                    style="color: var(--clr-ivory-dark); font-size: 1.4rem; font-family: var(--font-body); letter-spacing: 2px;">
-                    10th April 2026</p>
-                <div class="countdown-container" style="justify-content: center; margin-top: 30px;">
-                    <div class="countdown-item">
-                        <span id="days">00</span>
-                        <p>Days</p>
-                    </div>
-                    <div class="countdown-item">
-                        <span id="hours">00</span>
-                        <p>Hours</p>
-                    </div>
-                    <div class="countdown-item">
-                        <span id="minutes">00</span>
-                        <p>Mins</p>
-                    </div>
-                    <div class="countdown-item">
-                        <span id="seconds">00</span>
-                        <p>Secs</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Events Section -->
     <section id="events" class="section-events section-padding dark-bg">
@@ -297,6 +265,40 @@
         </div>
     </section>
 
+
+
+    <!-- Countdown Section -->
+    <section id="countdown" class="section-padding dark-bg" style="padding-top: 60px;">
+        <div class="container text-center reveal">
+            <h2 class="section-title light-text">Counting Down The Days</h2>
+            <div class="title-separator mb-4"></div>
+
+            <div class="hero-content fade-in-up" style="max-width: 100%; padding: 0;">
+                <p class="venue mb-4"
+                    style="color: var(--clr-ivory-dark); font-size: 1.4rem; font-family: var(--font-body); letter-spacing: 2px;">
+                    10th April 2026</p>
+                <div class="countdown-container" style="justify-content: center; margin-top: 30px;">
+                    <div class="countdown-item">
+                        <span id="days">00</span>
+                        <p>Days</p>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="hours">00</span>
+                        <p>Hours</p>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="minutes">00</span>
+                        <p>Mins</p>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">00</span>
+                        <p>Secs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container text-center">
@@ -318,7 +320,9 @@
 
             <form id="rsvpForm">
                 <div class="form-group">
-                    <input type="text" id="guestName" name="guestName" placeholder="Your Name" required>
+                    <input type="text" id="guestName" name="guestName" placeholder="Your Name" required
+                        pattern="[A-Za-z\s]+" title="Only letters and spaces allowed"
+                        onkeydown="return /[a-z\s]/i.test(event.key)">
                 </div>
                 <div class="form-group">
                     <select id="guestCount" name="guestCount" required>
