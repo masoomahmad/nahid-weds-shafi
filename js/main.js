@@ -209,4 +209,99 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* --- Rose Petal Confetti Logic --- */
+    // Helper to fire confetti with a distinct petal-like appearance
+    function fireRosePetals() {
+        const duration = 4000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { 
+            startVelocity: 15, 
+            spread: 360, 
+            ticks: 100, 
+            zIndex: 999,
+            gravity: 0.6, // Slower fall
+            scalar: 1.5   // Bigger petals
+        };
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            const particleCount = 15 * (timeLeft / duration);
+            // Fire from two sides, using dark red/maroon colors to mimic roses
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                colors: ['#800000', '#c8102e', '#ff0038', '#d4af37'],
+                shapes: ['circle']
+            }));
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                colors: ['#800000', '#c8102e', '#ff0038', '#d4af37'],
+                shapes: ['circle']
+            }));
+        }, 300);
+    }
+
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    // Trigger rose petals specifically when Hero section comes into full view
+    const heroSection = document.querySelector('.hero');
+    let confettiCooldown = false;
+
+    if (heroSection && typeof confetti !== 'undefined') {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !confettiCooldown) {
+                    // Fire when they scroll to the top
+                    setTimeout(fireRosePetals, 800);
+                    confettiCooldown = true;
+                } else if (!entry.isIntersecting) {
+                    // Reset when they scroll away so it can fire again later
+                    confettiCooldown = false;
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(heroSection);
+    }
+
+    /* --- Thank You Toast Logic --- */
+    const toast = document.getElementById('thankYouToast');
+    let toastShown = false;
+
+    if(toast) {
+        window.addEventListener('scroll', () => {
+            // Check if user is scrolled near the very bottom
+            const scrollPosition = Math.ceil(window.innerHeight + window.scrollY);
+            const documentHeight = Math.max(
+                document.body.scrollHeight, document.documentElement.scrollHeight,
+                document.body.offsetHeight, document.documentElement.offsetHeight,
+                document.body.clientHeight, document.documentElement.clientHeight
+            );
+
+            if (scrollPosition >= documentHeight - 150) {
+                if (!toastShown) {
+                    toast.classList.add('show');
+                    toastShown = true;
+
+                    // Auto hide after 5 seconds
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 5000);
+                }
+            } else {
+                // If they scroll back up, reset it so it can trigger again next time
+                toastShown = false;
+                toast.classList.remove('show');
+            }
+        });
+    }
+
 });
