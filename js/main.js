@@ -1,311 +1,212 @@
-;(function () {
-	
-	'use strict';
-
-	// iPad and iPod detection	
-	var isiPad = function(){
-		return (navigator.platform.indexOf("iPad") != -1);
-	};
-
-	var isiPhone = function(){
-	    return (
-			(navigator.platform.indexOf("iPhone") != -1) || 
-			(navigator.platform.indexOf("iPod") != -1)
-	    );
-	};
-
-
-
-	// Carousel Feature Slide
-	var testimonialCarousel = function(){
-		
-		var owl = $('.owl-carousel-fullwidth');
-		owl.owlCarousel({
-			animateOut: 'fadeOut',
-			items: 1,
-			loop: true,
-			margin: 0,
-			nav: false,
-			dots: true,
-			smartSpeed: 800,
-			autoHeight: false
-		});
-	};
-
-	var sliderMain = function() {
-		
-	  	$('#qbootstrap-slider-hero .flexslider').flexslider({
-			animation: "fade",
-			slideshowSpeed: 5000,
-			directionNav: true,
-			start: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			},
-			before: function(){
-				setTimeout(function(){
-					$('.slider-text').removeClass('animated fadeInUp');
-					$('.flex-active-slide').find('.slider-text').addClass('animated fadeInUp');
-				}, 500);
-			}
-
-	  	});
-
-	};
-
-
-
-	// animate-box
-	var contentWayPoint = function() {
-
-		$('.animate-box').waypoint( function( direction ) {
-
-			if( direction === 'down' && !$(this).hasClass('animated') ) {
-			
-				$(this.element).addClass('fadeInUp animated');
-			
-			}
-
-		} , { offset: '75%' } );
-
-	};
-
-
-	// Burger Menu
-	var burgerMenu = function() {
-
-		$('body').on('click', '.js-qbootstrap-nav-toggle', function(event){
-
-			if ( $('#navbar').is(':visible') ) {
-				$(this).removeClass('active');	
-			} else {
-				$(this).addClass('active');	
-			}
-
-			event.preventDefault();
-			
-		});
-
-	};
-
-
-	// Parallax
-	var parallax = function() {
-		if ( !isiPad() || !isiPhone() ) {
-			$(window).stellar();
-		}
-	};
-
-
-
-	// Page Nav
-	var clickMenu = function() {
-
-		$('a:not([class="external"])').click(function(event){
-			var section = $(this).data('nav-section'),
-				navbar = $('#navbar');
-		    $('html, body').animate({
-		        scrollTop: $('[data-section="' + section + '"]').offset().top
-		    }, 500);
-
-		    if ( navbar.is(':visible')) {
-		    	navbar.removeClass('in');
-		    	navbar.attr('aria-expanded', 'false');
-		    	$('.js-qbootstrap-nav-toggle').removeClass('active');
-		    }
-
-		    event.preventDefault();
-		    return false;
-		});
-
-	};
-
-	// Reflect scrolling in navigation
-	var navActive = function(section) {
-
-		var $el = $('#navbar > ul');
-		$el.find('li').removeClass('active');
-		$el.each(function(){
-			$(this).find('a[data-nav-section="'+section+'"]').closest('li').addClass('active');
-		});
-
-	};
-	var navigationSection = function() {
-
-		var $section = $('div[data-section]');
-		
-		$section.waypoint(function(direction) {
-		  	if (direction === 'down') {
-		    	navActive($(this.element).data('section'));
-		    
-		  	}
-		}, {
-		  	offset: '150px'
-		});
-
-		$section.waypoint(function(direction) {
-		  	if (direction === 'up') {
-		    	navActive($(this.element).data('section'));
-		  	}
-		}, {
-		  	offset: function() { return -$(this.element).height() + 155; }
-		});
-
-	};
-
-
-	// Window Scroll
-	var windowScroll = function() {
-		var lastScrollTop = 0;
-
-		$(window).scroll(function(event){
-
-		   	var header = $('#qbootstrap-header'),
-				scrlTop = $(this).scrollTop();
-
-			if ( scrlTop > 500 && scrlTop <= 2000 ) {
-				header.addClass('navbar-fixed-top qbootstrap-animated slideInDown');
-			} else if ( scrlTop <= 500) {
-				if ( header.hasClass('navbar-fixed-top') ) {
-					header.addClass('navbar-fixed-top qbootstrap-animated slideOutUp');
-					setTimeout(function(){
-						header.removeClass('navbar-fixed-top qbootstrap-animated slideInDown slideOutUp');
-					}, 100 );
-				}
-			} 
-			
-		});
-	};
-
-
-
-	// Animations
-	var contentWayPoint = function() {
-		var i = 0;
-		$('.animate-box').waypoint( function( direction ) {
-
-			if( direction === 'down' && !$(this.element).hasClass('animated') ) {
-				
-				i++;
-
-				$(this.element).addClass('item-animate');
-				setTimeout(function(){
-
-					$('body .animate-box.item-animate').each(function(k){
-						var el = $(this);
-						setTimeout( function () {
-							var effect = el.data('animate-effect');
-							if ( effect === 'fadeIn') {
-								el.addClass('fadeIn animated');
-							} else if ( effect === 'fadeInLeft') {
-								el.addClass('fadeInLeft animated');
-							} else if ( effect === 'fadeInRight') {
-								el.addClass('fadeInRight animated');
-							} else {
-								el.addClass('fadeInUp animated');
-							}
-
-							el.removeClass('item-animate');
-						},  k * 50, 'easeInOutExpo' );
-					});
-					
-				}, 50);
-				
-			}
-
-		} , { offset: '85%' } );
-	};
-
-
-	var inlineSVG = function() {
-		$('img.svg').each(function(){
-	    var $img = $(this);
-	    var imgID = $img.attr('id');
-	    var imgClass = $img.attr('class');
-	    var imgURL = $img.attr('src');
-
-	    $.get(imgURL, function(data) {
-	        // Get the SVG tag, ignore the rest
-	        var $svg = jQuery(data).find('svg');
-
-	        // Add replaced image's ID to the new SVG
-	        if(typeof imgID !== 'undefined') {
-	            $svg = $svg.attr('id', imgID);
-	        }
-	        // Add replaced image's classes to the new SVG
-	        if(typeof imgClass !== 'undefined') {
-	            $svg = $svg.attr('class', imgClass+' replaced-svg');
-	        }
-
-	        // Remove any invalid XML tags as per http://validator.w3.org
-	        $svg = $svg.removeAttr('xmlns:a');
-
-	        // Replace image with new SVG
-	        $img.replaceWith($svg);
-
-	    }, 'xml');
-
-		});
-	};
-	
-
-	// Set the date we're counting down to
-		var countDownDate = new Date("Dec 02, 2017 15:37:25").getTime();
-
-		// Update the count down every 1 second
-		var x = setInterval(function() {
-
-		// Get todays date and time
-		var now = new Date().getTime();
-
-		// Find the distance between now an the count down date
-		var distance = countDownDate - now;
-
-		// Time calculations for days, hours, minutes and seconds
-		var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-		var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-		var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-		var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-		// Display the result in an element with id="demo"
-		// document.getElementById("demo").innerHTML = days + "Days " + hours + "Hours "
-		// + minutes + "Minutes " + seconds + "Seconds ";
-
-		// Display the result in an element with id="demo"
-		document.getElementById("days").innerHTML = days +" <small>days</small>";
-		document.getElementById("hours").innerHTML = hours + " <small>hours</small> ";
-		document.getElementById("minutes").innerHTML = minutes + " <small>minutes</small> ";
-		document.getElementById("seconds").innerHTML = seconds + " <small>seconds</small> ";
-
-		// If the count down is finished, write some text 
-		if (distance < 0) {
-		 clearInterval(x);
-		 document.getElementById("demo").innerHTML = "The Wedding Ceremony is Over";
-		}
-		}, 1000);	
-	
-		
-	var bgVideo = function() {
-		$('.player').mb_YTPlayer();
-	};
-        
-
-	// Document on load.
-	$(function(){
-
-		burgerMenu();
-		testimonialCarousel();
-		sliderMain();
-		clickMenu();
-		parallax();
-		// windowScroll();
-		navigationSection();
-		contentWayPoint();
-		inlineSVG();
-		bgVideo();
-	});
-
-
-}());
+/* 
+==================================================
+ROYAL WEDDING WEBSITE MAIN JS
+================================================== 
+*/
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Remove Loader
+    const loader = document.getElementById('loader');
+    setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 500);
+    }, 1000);
+
+    // 2. Navbar Scroll Effect & Mobile Menu
+    const navbar = document.getElementById('navbar');
+    const hamburger = document.querySelector('.hamburger');
+    const navLinksList = document.querySelector('.nav-links');
+    const navLinks = document.querySelectorAll('.nav-links li a');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    hamburger.addEventListener('click', () => {
+        navLinksList.classList.toggle('active');
+        const icon = hamburger.querySelector('i');
+        if (navLinksList.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    });
+
+    // Close mobile menu on link click
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navLinksList.classList.remove('active');
+            hamburger.querySelector('i').classList.remove('fa-times');
+            hamburger.querySelector('i').classList.add('fa-bars');
+        });
+    });
+
+    // 3. Countdown Timer to April 10, 2026
+    const weddingDate = new Date('April 10, 2026 15:30:00').getTime(); // Roughly Before Asar
+
+    const updateCountdown = () => {
+        const now = new Date().getTime();
+        const distance = weddingDate - now;
+
+        if (distance < 0) {
+            document.querySelector('.countdown-container').innerHTML = "<h3 class='gold-text' style='font-family: var(--font-heading); font-size: 2rem;'>Alhamdulillah, We're Married!</h3>";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById('days').innerText = days < 10 ? '0' + days : days;
+        document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+        document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+    };
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 4. Scroll Reveal Animations (Intersection Observer)
+    const revealElements = document.querySelectorAll('.reveal, .scale-in');
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null,
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // 5. Toggle Menu Section & RSVP Logic
+    const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+    const menuGrid = document.getElementById('menuGrid');
+    
+    // RSVP Modal Elements
+    const rsvpModal = document.getElementById('rsvpModal');
+    const closeBtn = document.querySelector('.close-btn');
+    const rsvpForm = document.getElementById('rsvpForm');
+    const rsvpSuccess = document.getElementById('rsvpSuccess');
+
+    let isRsvpSubmitted = false;
+
+    if (toggleMenuBtn && menuGrid) {
+        toggleMenuBtn.addEventListener('click', () => {
+            // If they haven't RSVP'd yet, clicking the button ONLY opens the modal
+            if (!isRsvpSubmitted) {
+                if (rsvpModal) rsvpModal.classList.add('show');
+            } else {
+                // If they HAVE RSVP'd, it acts as a normal toggle button for the menu
+                menuGrid.classList.toggle('hidden');
+                if (menuGrid.classList.contains('hidden')) {
+                    toggleMenuBtn.innerHTML = '<i class="fas fa-utensils" style="margin-right: 10px;"></i> Reveal The Menu';
+                } else {
+                    toggleMenuBtn.innerHTML = '<i class="fas fa-times" style="margin-right: 10px;"></i> Hide Menu';
+                }
+            }
+        });
+    }
+
+    // Modal Close Logic
+    if (rsvpModal && closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            rsvpModal.classList.remove('show');
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === rsvpModal) {
+                rsvpModal.classList.remove('show');
+            }
+        });
+    }
+
+    // Modal Submit Logic (Reveals Menu & Sends to Google Sheet)
+    if (rsvpForm) {
+        rsvpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const submitBtn = rsvpForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = 'Sending...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(rsvpForm);
+            const data = new URLSearchParams();
+            // Map our form fields to the sheet columns (using original aqiqah names where possible to recycle columns, plus new ones)
+            data.append('name', formData.get('guestName'));
+            data.append('guests', formData.get('guestCount'));
+            data.append('attendance', formData.get('attendance'));
+            data.append('message', formData.get('guestMessage'));
+
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdxBCQgAq7Np3ZVtjwzWWSKwIHH0STwReqEZIST046il5Td0yeasd5ne-D5XJ1OHbQqw/exec';
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(res => {
+                // 1. Show Success Message in Modal
+                rsvpForm.style.display = 'none';
+                if (rsvpSuccess) rsvpSuccess.classList.remove('hidden');
+                
+                // 2. Mark as submitted
+                isRsvpSubmitted = true;
+                
+                // 3. Reveal the actual menu behind the scenes
+                if (menuGrid) {
+                    menuGrid.classList.remove('hidden');
+                }
+                if (toggleMenuBtn) {
+                    toggleMenuBtn.innerHTML = '<i class="fas fa-times" style="margin-right: 10px;"></i> Hide Menu';
+                }
+                
+                // 4. Close modal and scroll to menu after a delay
+                setTimeout(() => {
+                    if (rsvpModal) {
+                        rsvpModal.classList.remove('show');
+                        
+                        // Reset modal content silently for future state
+                        setTimeout(() => {
+                            rsvpForm.reset();
+                            submitBtn.innerText = originalBtnText;
+                            submitBtn.disabled = false;
+                        }, 500);
+                    }
+                    
+                    // Scroll down to the newly revealed menu
+                    if (menuGrid) {
+                        menuGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 2500); // Wait 2.5 seconds before closing
+            })
+            .catch(error => {
+                console.error('Error submitting RSVP!', error.message);
+                submitBtn.innerText = 'Error! Try Again';
+                submitBtn.disabled = false;
+                setTimeout(() => {
+                    submitBtn.innerText = originalBtnText;
+                }, 3000);
+            });
+        });
+    }
+
+});
