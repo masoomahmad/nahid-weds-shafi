@@ -556,10 +556,16 @@ img {
 
 /* Events Section */
 .events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 30px;
     margin-top: 50px;
+}
+
+.events-grid .event-card {
+    width: 100%;
+    max-width: 650px;
 }
 
 .event-card {

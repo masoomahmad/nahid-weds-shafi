@@ -5,7 +5,7 @@ ROYAL WEDDING WEBSITE MAIN JS
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // 1. Remove Loader
     const loader = document.getElementById('loader');
     setTimeout(() => {
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Toggle Menu Section & RSVP Logic
     const toggleMenuBtn = document.getElementById('toggleMenuBtn');
     const menuGrid = document.getElementById('menuGrid');
-    
+
     // RSVP Modal Elements
     const rsvpModal = document.getElementById('rsvpModal');
     const closeBtn = document.querySelector('.close-btn');
@@ -106,19 +106,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isRsvpSubmitted = false;
 
+    // Menu unlock date: April 7, 2026 (midnight local time)
+    const menuUnlockDate = new Date('2026-04-07T00:00:00');
+
+    // Original condition (commented out for testing):
+    const isMenuUnlocked = new Date() >= menuUnlockDate;
+
+    // --> TESTING MODE ONLY <-- Set to true to test the menu reveal right now
+    // const isMenuUnlocked = true;
+
     if (toggleMenuBtn && menuGrid) {
         toggleMenuBtn.addEventListener('click', () => {
-            // If they haven't RSVP'd yet, clicking the button ONLY opens the modal
-            if (!isRsvpSubmitted) {
-                if (rsvpModal) rsvpModal.classList.add('show');
-            } else {
-                // If they HAVE RSVP'd, it acts as a normal toggle button for the menu
+            if (isRsvpSubmitted && isMenuUnlocked) {
+                // Already RSVP'd and menu is unlocked: act as toggle
                 menuGrid.classList.toggle('hidden');
                 if (menuGrid.classList.contains('hidden')) {
                     toggleMenuBtn.innerHTML = '<i class="fas fa-utensils" style="margin-right: 10px;"></i> Reveal The Menu';
                 } else {
                     toggleMenuBtn.innerHTML = '<i class="fas fa-times" style="margin-right: 10px;"></i> Hide Menu';
                 }
+            } else {
+                // Always open the RSVP modal (before or after April 7)
+                if (rsvpModal) rsvpModal.classList.add('show');
             }
         });
     }
@@ -140,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rsvpForm) {
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const submitBtn = rsvpForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerText;
             submitBtn.innerText = 'Sending...';
@@ -163,49 +172,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
-            .then(res => {
-                // 1. Show Success Message in Modal
-                rsvpForm.style.display = 'none';
-                if (rsvpSuccess) rsvpSuccess.classList.remove('hidden');
-                
-                // 2. Mark as submitted
-                isRsvpSubmitted = true;
-                
-                // 3. Reveal the actual menu behind the scenes
-                if (menuGrid) {
-                    menuGrid.classList.remove('hidden');
-                }
-                if (toggleMenuBtn) {
-                    toggleMenuBtn.innerHTML = '<i class="fas fa-times" style="margin-right: 10px;"></i> Hide Menu';
-                }
-                
-                // 4. Close modal and scroll to menu after a delay
-                setTimeout(() => {
-                    if (rsvpModal) {
-                        rsvpModal.classList.remove('show');
-                        
-                        // Reset modal content silently for future state
-                        setTimeout(() => {
-                            rsvpForm.reset();
-                            submitBtn.innerText = originalBtnText;
-                            submitBtn.disabled = false;
-                        }, 500);
-                    }
-                    
-                    // Scroll down to the newly revealed menu
-                    if (menuGrid) {
-                        menuGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 2500); // Wait 2.5 seconds before closing
-            })
-            .catch(error => {
-                console.error('Error submitting RSVP!', error.message);
-                submitBtn.innerText = 'Error! Try Again';
-                submitBtn.disabled = false;
-                setTimeout(() => {
-                    submitBtn.innerText = originalBtnText;
-                }, 3000);
-            });
+                .then(res => {
+                    // 1. Show Success Message in Modal
+                    rsvpForm.style.display = 'none';
+                    if (rsvpSuccess) rsvpSuccess.classList.remove('hidden');
+
+                    // 2. Mark as submitted
+                    isRsvpSubmitted = true;
+
+                    // 3. Close modal after a delay
+                    setTimeout(() => {
+                        if (rsvpModal) {
+                            rsvpModal.classList.remove('show');
+
+                            // Reset modal content silently for future state
+                            setTimeout(() => {
+                                rsvpForm.reset();
+                                submitBtn.innerText = originalBtnText;
+                                submitBtn.disabled = false;
+                            }, 500);
+                        }
+
+                        // 4. Either reveal the menu or show a coming-soon message
+                        if (isMenuUnlocked) {
+                            // Menu is already unlocked — reveal it and scroll to it
+                            if (menuGrid) menuGrid.classList.remove('hidden');
+                            if (toggleMenuBtn) {
+                                toggleMenuBtn.innerHTML = '<i class="fas fa-times" style="margin-right: 10px;"></i> Hide Menu';
+                            }
+                            if (menuGrid) {
+                                menuGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        } else {
+                            // Menu not yet unlocked — update button to show unlock date message
+                            if (toggleMenuBtn) {
+                                toggleMenuBtn.innerHTML = '<i class="fas fa-calendar-alt" style="margin-right: 10px;"></i> Menu Reveals on 7th April 🗓️';
+                                toggleMenuBtn.style.opacity = '0.75';
+                                toggleMenuBtn.style.cursor = 'default';
+                            }
+                        }
+                    }, 2500); // Wait 2.5 seconds before closing
+                })
+                .catch(error => {
+                    console.error('Error submitting RSVP!', error.message);
+                    submitBtn.innerText = 'Error! Try Again';
+                    submitBtn.disabled = false;
+                    setTimeout(() => {
+                        submitBtn.innerText = originalBtnText;
+                    }, 3000);
+                });
         });
     }
 
@@ -214,16 +229,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function fireRosePetals() {
         const duration = 4000;
         const animationEnd = Date.now() + duration;
-        const defaults = { 
-            startVelocity: 15, 
-            spread: 360, 
-            ticks: 100, 
+        const defaults = {
+            startVelocity: 15,
+            spread: 360,
+            ticks: 100,
             zIndex: 999,
             gravity: 0.6, // Slower fall
             scalar: 1.5   // Bigger petals
         };
 
-        const interval = setInterval(function() {
+        const interval = setInterval(function () {
             const timeLeft = animationEnd - Date.now();
 
             if (timeLeft <= 0) {
@@ -232,14 +247,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const particleCount = 15 * (timeLeft / duration);
             // Fire from two sides, using dark red/maroon colors to mimic roses
-            confetti(Object.assign({}, defaults, { 
-                particleCount, 
+            confetti(Object.assign({}, defaults, {
+                particleCount,
                 origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
                 colors: ['#800000', '#c8102e', '#ff0038', '#d4af37'],
                 shapes: ['circle']
             }));
-            confetti(Object.assign({}, defaults, { 
-                particleCount, 
+            confetti(Object.assign({}, defaults, {
+                particleCount,
                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
                 colors: ['#800000', '#c8102e', '#ff0038', '#d4af37'],
                 shapes: ['circle']
@@ -276,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toast = document.getElementById('thankYouToast');
     let toastShown = false;
 
-    if(toast) {
+    if (toast) {
         window.addEventListener('scroll', () => {
             // Check if user is scrolled near the very bottom
             const scrollPosition = Math.ceil(window.innerHeight + window.scrollY);
