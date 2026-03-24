@@ -150,6 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
+            if (!rsvpForm.checkValidity()) {
+                rsvpForm.reportValidity();
+                return;
+            }
+
             const submitBtn = rsvpForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerText;
             submitBtn.innerText = 'Sending...';
