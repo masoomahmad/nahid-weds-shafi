@@ -36,16 +36,16 @@ def generate_message(name, city):
         
     return f"""{header}اَلسَلامُ عَلَيْكُم وَرَحْمَةُ اَللهِ وَبَرَكاتُهُ
 
-Allah Subhanahu Wa Ta'ala ke fazl-o-karam se meri behen Nahid ka Nikah Shafi ke saath tay paya hai. Is khushi ke pur-musarrat mauqe par hum aapko aur aapke ahlesunnat/parivaar ko dil se dawat dete hain.
+\u200EAllah Subhanahu Wa Ta'ala ke fazl-o-karam se meri behen Nahid ka Nikah Shafi ke saath tay paya hai. Is khushi ke pur-musarrat mauqe par hum aapko aur aapke ahlesunnat/parivaar ko dil se dawat dete hain.
 
-Meherbani farma kar zaroor tashreef layein aur naye jode ko apni neik duaon se nawazein. Saath mein digital card ki link share kar raha hoon. 
+\u200EMeherbani farma kar zaroor tashreef layein aur naye jode ko apni neik duaon se nawazein. Saath mein digital card ki link share kar raha hoon. 
 
-🌐 Hamari Digital Invitation link: {WEBSITE_URL}
+\u200E🌐 Hamari Digital Invitation link: {WEBSITE_URL}
 
-JazakAllah Khairan,
+\u200EJazakAllah Khairan,
 
-Duaon ka talabgaar,
-Masoom Ahmad"""
+\u200EDuaon ka talabgaar,
+\u200EMasoom Ahmad"""
 
 def main():
     print("=" * 60)
